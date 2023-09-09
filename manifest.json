@@ -1,0 +1,11 @@
+{
+    "version": "1.0",
+    "manifest_version": 3,
+    "name": "Easy SEO Extenison",
+    "description": "The most useful SEO extension",
+    "action": {
+        "default_popup": "js/index.html",
+        "default_title": "React Chrome Extension"
+    },
+    "permissions": ["activeTab", "scripting"]
+}
