@@ -4,6 +4,8 @@ import Description from './Description';
 import Url from './Url';
 import Canonical from './Canonical';
 import Indexability from './Indexability';
+import Heading from "./Heading";
+import HiddenCheck from './HiddenCheck';
 
 const Overview = () => {
     return (
@@ -14,6 +16,8 @@ const Overview = () => {
             <Canonical />
             <Url />
             <Indexability />
+            <HiddenCheck />
+            <Heading />
         </div>
     );
 }

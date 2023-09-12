@@ -17,7 +17,7 @@ function App() {
                 Easy SEO Extenison 1.0
             </div>
             <div className='flex'>
-                <ul className="menu p-0">
+                <ul className="menu p-0 mainHeight">
                     <li>
                         <a className={`tooltip tooltip-right rounded-none ${activeTab === 0 ? "" : "active"}`} data-tip="Overview" onClick={() => handleActiveTab(0)}>
                             <FontAwesomeIcon className='text-xl py-2' icon={faHouse} />
@@ -47,7 +47,7 @@ function App() {
                         <a className={`tooltip tooltip-right rounded-none active h-60`} />
                     </li>
                 </ul>
-                <div className='w-full'>
+                <div className='w-full mainHeight overflow-y-scroll'>
                     {activeTab === 0 && <Overview />}
                 </div>
             </div>
