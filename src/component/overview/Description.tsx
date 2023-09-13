@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { DESCRIPTION_RANGE } from "../../utils/consts";
 import { getDescription } from "../../content/overview";
 
 const Description = () => {
     const [content, setContent] = useState<String>('');
     const [status, setStatus] = useState<String>('bg-yellow-500');
+    const [des, setDes] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,12 +25,18 @@ const Description = () => {
 
     const onDescriptionChange = (txt: string) => {
         setContent(txt);
-        if (txt.length < DESCRIPTION_RANGE[0])
+        if (txt.length < DESCRIPTION_RANGE[0]) {
             setStatus('bg-yellow-400');
-        else if (txt.length > DESCRIPTION_RANGE[2])
+            setDes(' - Too Short!');
+        }
+        else if (txt.length > DESCRIPTION_RANGE[1]) {
             setStatus('bg-red-400');
-        else
+            setDes(' - Too Long!');
+        }
+        else {
             setStatus('bg-green-500');
+            setDes('');
+        }
     }
 
     return (
@@ -39,8 +46,8 @@ const Description = () => {
                 <textarea className="textarea textarea-bordered w-full mb-1" placeholder="Description" value={String(content)} onChange={handleChange} />
                 <br />
                 <span className={`px-2 py-1 rounded-xl text-white ${status}`}>
-                    <FontAwesomeIcon icon={faCheck} />
-                    {` ${content.length} characters`}
+                    <FontAwesomeIcon icon={status === "bg-green-500" ? faCheck : faTimes} />
+                    {` ${content.length} characters${des}`}
                 </span>
             </div>
         </div>

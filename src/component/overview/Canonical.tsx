@@ -19,7 +19,7 @@ const Canonical = () => {
                 setColor('bg-green-500');
             }
             else {
-                setState('not the canonical');
+                setState('current page not the canonical');
                 setColor('bg-yellow-400');
             }
         }

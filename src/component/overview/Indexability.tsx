@@ -45,7 +45,6 @@ const Indexability = () => {
                 author: author,
                 publisher: publisher
             };
-            console.log(data);
             setData(data);
         }
 

@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faHeading, faImage, faLink, faDatabase } from "@fortawesome/free-solid-svg-icons";
 import "./App.css";
 import Overview from './component/overview';
+import SubHeading from './component/subheading';
+import Images from "./component/images";
 
 function App() {
     const [activeTab, setActiveTab] = useState<Number>(0);
@@ -49,6 +51,8 @@ function App() {
                 </ul>
                 <div className='w-full mainHeight overflow-y-scroll'>
                     {activeTab === 0 && <Overview />}
+                    {activeTab === 1 && <SubHeading />}
+                    {activeTab === 2 && <Images />}
                 </div>
             </div>
         </div>

@@ -132,17 +132,42 @@ export const getHiddenCheck = async () => {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
     const tab = tabs[0];
     const tabId = tab.id;
-    const result = await chrome.scripting.executeScript({
+    let issues = [];
+    const h1 = await chrome.scripting.executeScript({
         target: { tabId },
         func: () => {
-            let issues = [];
-            const h1 = document.querySelectorAll("h1");
-            const img = document.querySelectorAll("img");
-            console.log("h1", h1);
-            console.log("img", img);
-            if (h1.length === 0) issues.push("Missing H1");
-            if (tab.url.endsWith("/")) issues.push("Trailing slash");
-            if (img.length === 0) issues.push("Missing images");
+            const h1Tags = document.querySelectorAll("h1");
+            return h1Tags.length === 0 ? true : false;
+        },
+        args: [],
+    });
+    if (h1[0].result) issues.push("Missing H1");
+
+    let redirected = true;
+    if (tab.url.endsWith("/")) {
+        const response = await fetch(tab.url.slice(0, tab.url.length - 1));
+        if (response.redirected && response.url === tab.url) redirected = true;
+        else redirected = false;
+    } else {
+        const response = await fetch(`${tab.url}/`);
+        if (response.redirected && response.url === tab.url) redirected = true;
+        else redirected = false;
+    }
+    if (!redirected) issues.push("Trailing Slash");
+
+    const img = await chrome.scripting.executeScript({
+        target: { tabId },
+        func: () => {
+            const imgTags = document.querySelectorAll("img");
+            return imgTags.length === 0 ? true : false;
+        },
+        args: [],
+    });
+    if (img[0].result) issues.push("Missing images");
+
+    const structure = await chrome.scripting.executeScript({
+        target: { tabId },
+        func: () => {
             const htmlText = document.documentElement.innerHTML;
             const h1Idx = htmlText.indexOf("<h1");
             const h2Idx = htmlText.indexOf("<h2");
@@ -150,20 +175,19 @@ export const getHiddenCheck = async () => {
             const h4Idx = htmlText.indexOf("<h4");
             const h5Idx = htmlText.indexOf("<h5");
             const h6Idx = htmlText.indexOf("<h6");
-            if (
-                h2Idx > h1Idx ||
-                h3Idx > h1Idx ||
-                h4Idx > h1Idx ||
-                h5Idx > h1Idx ||
-                h6Idx > h1Idx
-            )
-                issues.push("Illogical Heading Structure");
-            return issues;
+            return (
+                (h2Idx !== -1 && h2Idx < h1Idx) ||
+                (h3Idx !== -1 && h3Idx < h1Idx) ||
+                (h4Idx !== -1 && h4Idx < h1Idx) ||
+                (h5Idx !== -1 && h5Idx < h1Idx) ||
+                (h6Idx !== -1 && h6Idx < h1Idx)
+            );
         },
         args: [],
     });
+    if (structure[0].result) issues.push("Illogical heading");
 
-    return result[0].result;
+    return issues;
 };
 
 export const getHeadings = async () => {
