@@ -5,6 +5,8 @@ import "./App.css";
 import Overview from './component/overview';
 import SubHeading from './component/subheading';
 import Images from "./component/images";
+import Links from "./component/links";
+import Schema from './component/schema';
 
 function App() {
     const [activeTab, setActiveTab] = useState<Number>(0);
@@ -53,6 +55,8 @@ function App() {
                     {activeTab === 0 && <Overview />}
                     {activeTab === 1 && <SubHeading />}
                     {activeTab === 2 && <Images />}
+                    {activeTab === 3 && <Links />}
+                    {activeTab === 4 && <Schema />}
                 </div>
             </div>
         </div>

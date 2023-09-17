@@ -78,7 +78,7 @@ const Subheading = () => {
             </div>
             <div className="font-bold">
                 {data.length > 0 && data[0][0] !== 'H1' && <div>
-                    <span className="rounded-xl bg-red-500 text-white text-sm px-2">Missing H1 Tags</span>
+                    <span className="rounded-xl bg-red-500 text-white text-sm px-2">Missing H1 Tag</span>
                 </div>}
                 {
                     data.map((ele, index) => {

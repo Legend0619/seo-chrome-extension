@@ -221,3 +221,17 @@ export const getHeadings = async () => {
 
     return result[0].result;
 };
+
+export const getRedirect = async () => {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tab = tabs[0];
+    const tabId = tab.id;
+    const res = await chrome.runtime.sendMessage({
+        action: "Get Status Info",
+        tabId: tabId,
+    });
+
+    console.log("123", res);
+
+    return res;
+};

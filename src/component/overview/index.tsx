@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Title from './Title';
 import Description from './Description';
 import Url from './Url';
@@ -6,6 +5,7 @@ import Canonical from './Canonical';
 import Indexability from './Indexability';
 import Heading from "./Heading";
 import HiddenCheck from './HiddenCheck';
+import RedirectPath from './RedirectPath';
 
 const Overview = () => {
     return (
@@ -17,6 +17,7 @@ const Overview = () => {
             <Url />
             <Indexability />
             <HiddenCheck />
+            <RedirectPath />
             <Heading />
         </div>
     );
