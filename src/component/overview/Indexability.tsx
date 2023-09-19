@@ -66,7 +66,7 @@ const Indexability = () => {
                     </div>
                     <div>
                         <p className="text-base">Indexability</p>
-                        <p className="text-base-content">{(data.robots.indexOf('noindex') === -1 && data.xRobots.indexOf('noindex') === -1) ? "Allowed" : "Not allowed"}</p>
+                        <span className={`px-2 py-1 rounded-xl text-white ${(data.robots.indexOf('noindex') === -1 && data.xRobots.indexOf('noindex') === -1) ? 'bg-green-500' : 'bg-red-400'}`}>{(data.robots.indexOf('noindex') === -1 && data.xRobots.indexOf('noindex') === -1) ? "Allowed" : "Not allowed"}</span>
                     </div>
                 </div>
                 <div className='grid grid-cols-3 gap-4 mb-3'>

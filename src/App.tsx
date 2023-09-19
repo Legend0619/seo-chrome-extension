@@ -17,7 +17,7 @@ function App() {
 
     return (
         <div className="App">
-            <div className="bg-green-300 px-4 py-2 text-lg">
+            <div className="banner px-4 py-2 text-lg text-white">
                 Easy SEO Extenison 1.0
             </div>
             <div className='flex'>

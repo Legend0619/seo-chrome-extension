@@ -34,11 +34,7 @@ const Title = () => {
             statusTmp = 'bg-green-500';
             desTmp = '';
         }
-        else if (txt.length > TITLE_RANGE[1] && txt.length <= TITLE_RANGE[2]) {
-            statusTmp = 'bg-red-400';
-            desTmp = '';
-        }
-        else if (txt.length > TITLE_RANGE[2]) {
+        else if (txt.length > TITLE_RANGE[1]) {
             statusTmp = 'bg-red-400';
             desTmp = ' - Too Long!';
         }

@@ -1,3 +1,5 @@
+const brokenStatus = [400, 401, 403, 404, 405, 410, 500, 502, 503];
+
 function createFileCsvAndDownload(name, rows) {
     let csvContent =
         "data:text/csv;charset=utf-8," +
@@ -18,9 +20,15 @@ async function processLinks(links) {
         links.map(async (link) => {
             try {
                 const response = await fetch(link.url);
-                if (response.status >= 400) broken.push(link);
+                broken.push({
+                    ...link,
+                    status: response.status,
+                });
             } catch (err) {
-                broken.push(link);
+                broken.push({
+                    ...link,
+                    status: 503,
+                });
             }
         })
     );
@@ -50,6 +58,11 @@ export const getLinks = async () => {
             const anchors = document.querySelectorAll("a");
             let links = [];
             anchors.forEach((anchor) => {
+                let type = "Text";
+                if (anchor.href.startsWith("mailto")) type = "Email";
+                if (anchor.href.startsWith("tel")) type = "Telephone";
+                if (anchor.querySelector("img") !== null) type = "Image";
+
                 const linkElement = document.createElement("a");
                 linkElement.href = anchor.href;
 
@@ -58,6 +71,7 @@ export const getLinks = async () => {
                         url: anchor.href,
                         txt: anchor.innerText,
                         isInternal: linkElement.hostname === curDomain,
+                        type: type,
                     });
             });
             return links;
@@ -66,27 +80,32 @@ export const getLinks = async () => {
     });
 
     const all = links[0].result;
+
+    // let allLink = [];
+    let allLink = await processLinks(all);
+    // const savedData = await chrome.storage.sync.get([urlName]);
+    // if (savedData[`${urlName}`]) allLink = JSON.parse(savedData[`${urlName}`]);
+    // else allLink = await processLinks(all);
+
     let internal = [];
     let external = [];
+    let broken = [];
     const unique = new Map();
 
-    all.forEach((link) => {
+    allLink.forEach((link) => {
         unique.set(link.url, link.txt);
+
+        if (brokenStatus.includes(link.status)) broken.push(link);
 
         if (link.isInternal) internal.push(link);
         else external.push(link);
     });
 
-    let broken = [];
-    const savedData = await chrome.storage.sync.get([urlName]);
-    if (savedData[`${urlName}`]) broken = JSON.parse(savedData[`${urlName}`]);
-    else broken = await processLinks(all);
+    // let saveData = {};
+    // saveData[urlName] = JSON.stringify(allLink);
+    // await chrome.storage.sync.set(saveData);
 
-    let saveData = {};
-    saveData[urlName] = JSON.stringify(broken);
-    await chrome.storage.sync.set(saveData);
-
-    return { all, unique, internal, external, broken };
+    return { allLink, unique, internal, external, broken };
 };
 
 export const exportLink = async (type, links) => {
@@ -105,15 +124,14 @@ export const exportLink = async (type, links) => {
     });
 
     const name = `${type}_${hostName[0].result}.csv`;
-    const rows = [["Type", "URL", "Anchor"]];
-
-    console.log(links.length);
+    const rows = [["Type", "URL", "Anchor", "Status"]];
 
     for (const all_link of links) {
         rows.push([
             all_link.isInternal ? "Internal Link" : "External Link",
             all_link.url.replace(/#/g, "%23"),
             '"' + all_link.txt + '"',
+            '"' + all_link.status + '"',
         ]);
     }
 

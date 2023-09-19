@@ -1,17 +1,18 @@
-import { useState, useEffect } from "react";
-import { getHiddenCheck } from "../../content/overview";
+import React from 'react';
+// import { useState, useEffect } from "react";
+// import { getHiddenCheck } from "../../content/overview";
 
-const HiddenCheck = () => {
-    const [data, setData] = useState<string[]>([]);
+const HiddenCheck = ({ data }: { data: string[] }) => {
+    // const [data, setData] = useState<string[]>([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await getHiddenCheck();
-            setData(res);
-        }
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const res = await getHiddenCheck();
+    //         setData(res);
+    //     }
 
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
 
     if (data.length === 0) return (<div></div>);
     else return (

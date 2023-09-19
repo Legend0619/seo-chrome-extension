@@ -61,9 +61,3 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         sendResponse(res ? res : []);
     }
 });
-
-// chrome.tabs.onActivated.addListener((activeInfo) => {
-//     chrome.storage.sync.clear(function () {
-//         console.log("All data cleared");
-//     });
-// });

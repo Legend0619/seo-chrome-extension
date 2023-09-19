@@ -4,15 +4,21 @@ async function processImages(imgList) {
 
     await Promise.all(
         imgList.map(async (img) => {
-            const response = await fetch(img);
-            const format = response.headers.get("Content-Type").split("/")[1];
-            const fileSize = (await response.blob()).size / 1024;
+            try {
+                const response = await fetch(img);
+                const format = response.headers
+                    .get("Content-Type")
+                    .split("/")[1];
+                const fileSize = (await response.blob()).size / 1024;
 
-            if (format !== "webp") {
-                modern.push(img);
-            }
-            if (fileSize > 100) {
-                large.push(img);
+                if (format !== "webp") {
+                    modern.push(img);
+                }
+                if (fileSize > 100) {
+                    large.push(img);
+                }
+            } catch (err) {
+                console.log(err);
             }
         })
     );
@@ -42,8 +48,6 @@ export const getImages = async () => {
     });
     const { imgList, noAltList } = images[0].result;
     const { modern, large } = await processImages(imgList);
-
-    console.log(imgList, noAltList, large, modern);
 
     return { imgList, noAltList, large, modern };
 };

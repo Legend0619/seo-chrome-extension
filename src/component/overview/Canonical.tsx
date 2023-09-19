@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getCanonical } from "../../content/overview";
 
 const Canonical = () => {
-    const [canonical, setCanonical] = useState<String>('');
+    const [canonical, setCanonical] = useState<String>("");
     const [state, setState] = useState<String>('');
     const [color, setColor] = useState<String>('');
 
@@ -10,12 +10,12 @@ const Canonical = () => {
         const fetchData = async () => {
             const res = await getCanonical();
             setCanonical(String(res[0]));
-            if (res[0] == null) {
+            if (res[0] == "") {
                 setState('Missing');
                 setColor('bg-red-400');
             }                
             else if (res[0] == res[1]) {
-                setState('self-referencing');
+                setState('Self-referencing');
                 setColor('bg-green-500');
             }
             else {
@@ -32,6 +32,7 @@ const Canonical = () => {
             <div className="text-base">Canonical</div>
             <div className="col-span-4">
                 <div className='flex justify-end'>
+                    {(canonical !== "" && !canonical.startsWith('http')) ? <span className={`px-2 py-1 rounded-xl text-white bg-yellow-400 mr-2`}>Relative URL</span> : <span></span>}
                     <span className={`px-2 py-1 rounded-xl text-white ${color}`}>{state}</span>
                 </div>
                 <p className='text-sm break-words'>{canonical}</p>

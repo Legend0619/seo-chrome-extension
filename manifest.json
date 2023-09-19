@@ -8,13 +8,11 @@
         "default_title": "React Chrome Extension"
     },
     "permissions": [
-        "storage",
         "tabs",
         "activeTab",
         "scripting",
         "webRequest",
         "webNavigation",
-        "declarativeNetRequest",
         "clipboardWrite"
     ],
     "host_permissions": ["http://*/*", "https://*/*"],

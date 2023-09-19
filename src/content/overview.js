@@ -33,7 +33,7 @@ export const getCanonical = async () => {
         target: { tabId },
         func: () => {
             const linkTag = document.querySelector('link[rel="canonical"]');
-            return linkTag ? linkTag.getAttribute("href") : null;
+            return linkTag ? linkTag.getAttribute("href") : "";
         },
         args: [],
     });
@@ -137,22 +137,34 @@ export const getHiddenCheck = async () => {
         target: { tabId },
         func: () => {
             const h1Tags = document.querySelectorAll("h1");
-            return h1Tags.length === 0 ? true : false;
+            return h1Tags.length;
         },
         args: [],
     });
-    if (h1[0].result) issues.push("Missing H1");
+    if (h1[0].result === 0) issues.push("Missing H1");
+    if (h1[0].result > 1) issues.push("Multiple H1s");
 
     let redirected = true;
-    if (tab.url.endsWith("/")) {
-        const response = await fetch(tab.url.slice(0, tab.url.length - 1));
-        if (response.redirected && response.url === tab.url) redirected = true;
-        else redirected = false;
-    } else {
-        const response = await fetch(`${tab.url}/`);
-        if (response.redirected && response.url === tab.url) redirected = true;
-        else redirected = false;
+    const domain = document.createElement("a");
+    domain.href = tab.url;
+    let homePage = domain.hostname;
+    let tabUrl = tab.url;
+    if (tabUrl.startsWith("https")) tabUrl = tabUrl.replace("https://", "");
+    if (tabUrl.startsWith("http")) tabUrl = tabUrl.replace("http://", "");
+    if (`${tabUrl}/` !== homePage && tabUrl !== `${homePage}/`) {
+        if (tab.url.endsWith("/")) {
+            const response = await fetch(tab.url.slice(0, tab.url.length - 1));
+            if (response.redirected && response.url === tab.url)
+                redirected = true;
+            else redirected = false;
+        } else {
+            const response = await fetch(`${tab.url}/`);
+            if (response.redirected && response.url === tab.url)
+                redirected = true;
+            else redirected = false;
+        }
     }
+
     if (!redirected) issues.push("Trailing Slash");
 
     const img = await chrome.scripting.executeScript({
@@ -168,13 +180,18 @@ export const getHiddenCheck = async () => {
     const structure = await chrome.scripting.executeScript({
         target: { tabId },
         func: () => {
-            const htmlText = document.documentElement.innerHTML;
-            const h1Idx = htmlText.indexOf("<h1");
-            const h2Idx = htmlText.indexOf("<h2");
-            const h3Idx = htmlText.indexOf("<h3");
-            const h4Idx = htmlText.indexOf("<h4");
-            const h5Idx = htmlText.indexOf("<h5");
-            const h6Idx = htmlText.indexOf("<h6");
+            const hTags = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+            let tags = [];
+            hTags.forEach((tag) => {
+                tags.push(tag.tagName);
+            });
+
+            const h1Idx = tags.indexOf("H1");
+            const h2Idx = tags.indexOf("H2");
+            const h3Idx = tags.indexOf("H3");
+            const h4Idx = tags.indexOf("H4");
+            const h5Idx = tags.indexOf("H5");
+            const h6Idx = tags.indexOf("H6");
             return (
                 (h2Idx !== -1 && h2Idx < h1Idx) ||
                 (h3Idx !== -1 && h3Idx < h1Idx) ||
@@ -185,6 +202,7 @@ export const getHiddenCheck = async () => {
         },
         args: [],
     });
+
     if (structure[0].result) issues.push("Illogical heading");
 
     return issues;
@@ -230,8 +248,6 @@ export const getRedirect = async () => {
         action: "Get Status Info",
         tabId: tabId,
     });
-
-    console.log("123", res);
 
     return res;
 };

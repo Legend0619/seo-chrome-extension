@@ -7,7 +7,6 @@ function getSchemaList() {
                     'script[type="application/ld+json"]'
                 ),
             ].flatMap((e) => {
-                console.log(123);
                 const t = e.textContent.replace(/\n/g, "");
                 try {
                     const e = JSON.parse(t);
@@ -96,6 +95,5 @@ export const getSchema = async () => {
         args: [],
     });
     const data = schema[0].result;
-    console.log(data.map((item) => JSON.parse(item)));
     return data;
 };

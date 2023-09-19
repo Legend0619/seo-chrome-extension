@@ -27,7 +27,6 @@ const RedirectPath = () => {
     useEffect(() => {
         const fetchData = async () => {
             const res = await getRedirect();
-            console.log(res);
             setData(res);
         }
 
