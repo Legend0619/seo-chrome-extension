@@ -8,8 +8,6 @@
         "default_title": "React Chrome Extension"
     },
     "permissions": [
-        "tabs",
-        "activeTab",
         "scripting",
         "webRequest",
         "webNavigation",

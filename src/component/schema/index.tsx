@@ -94,7 +94,7 @@ const Schema = () => {
                                 <div key={index} className="collapse collapse-arrow bg-base-200 mb-3">
                                     <input type="radio" name="my-accordion-2" checked={openIdx === index ? true : false} onClick={() => handleOpen(index)} /> 
                                     <div className="collapse-title text-xl font-medium">
-                                        {String(ele[ele.findIndex(iitem => iitem.title === '@type')].value).replace("http://schema.org/", "")}
+                                        {String(ele[ele.findIndex(iitem => iitem.title === '@type')].value).replace("http://schema.org/", "").replace("https://schema.org/", "")}
                                     </div>
                                     <div className="collapse-content">
                                         {
