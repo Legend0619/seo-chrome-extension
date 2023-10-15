@@ -13,23 +13,57 @@ function createFileCsvAndDownload(name, rows) {
     link.click();
 }
 
-async function processLinks(links) {
+const colorLink = async (url, status) => {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tab = tabs[0];
+    const tabId = tab.id;
+
+    await chrome.scripting.executeScript({
+        target: { tabId },
+        func: (link, code) => {
+            const anchors = document.querySelectorAll("a");
+            anchors.forEach((anchor) => {
+                if (anchor.href === link) {
+                    anchor.style.color = "white";
+                    if (code === 200) anchor.style.backgroundColor = "#8bc34a";
+                    else anchor.style.backgroundColor = "#e97960";
+                }
+            });
+            return idx;
+        },
+        args: [url, status],
+    });
+};
+
+async function processLinks(links, setCount) {
     const broken = [];
 
     await Promise.all(
         links.map(async (link) => {
+            let code = 200;
             try {
-                const response = await fetch(link.url);
-                broken.push({
-                    ...link,
-                    status: response.status,
-                });
+                if (link.type !== "Email" && link.type !== "Telephone") {
+                    const response = await fetch(link.url);
+                    broken.push({
+                        ...link,
+                        status: response.status,
+                    });
+                    code = response.status;
+                } else {
+                    broken.push({
+                        ...link,
+                        status: 200,
+                    });
+                }
             } catch (err) {
                 broken.push({
                     ...link,
                     status: 503,
                 });
+                code = 503;
             }
+            setCount((cnt) => cnt + 1);
+            await colorLink(link.url, code);
         })
     );
 
@@ -41,51 +75,37 @@ export const getLinks = async () => {
     const tab = tabs[0];
     const tabId = tab.id;
 
-    const curUrl = await chrome.scripting.executeScript({
-        target: { tabId },
-        func: () => {
-            return window.location.href;
-        },
-        args: [],
-    });
-
-    const urlName = curUrl[0].result;
-
     const links = await chrome.scripting.executeScript({
         target: { tabId },
-        func: () => {
+        func: async () => {
             const curDomain = window.location.hostname;
             const anchors = document.querySelectorAll("a");
-            let links = [];
+            let broken = [];
             anchors.forEach((anchor) => {
                 let type = "Text";
                 if (anchor.href.startsWith("mailto")) type = "Email";
                 if (anchor.href.startsWith("tel")) type = "Telephone";
                 if (anchor.querySelector("img") !== null) type = "Image";
-
-                const linkElement = document.createElement("a");
-                linkElement.href = anchor.href;
-
-                if (anchor.href !== "")
-                    links.push({
+                if (anchor.href.startsWith("http")) {
+                    broken.push({
                         url: anchor.href,
                         txt: anchor.innerText,
-                        isInternal: linkElement.hostname === curDomain,
+                        isInternal: anchor.hostname === curDomain,
                         type: type,
                     });
+                }
             });
-            return links;
+            return broken;
         },
         args: [],
     });
 
-    const all = links[0].result;
+    const allLink = links[0].result;
+    return allLink;
+};
 
-    // let allLink = [];
-    let allLink = await processLinks(all);
-    // const savedData = await chrome.storage.sync.get([urlName]);
-    // if (savedData[`${urlName}`]) allLink = JSON.parse(savedData[`${urlName}`]);
-    // else allLink = await processLinks(all);
+export const makeData = async (links, setCount) => {
+    const allLink = await processLinks(links, setCount);
 
     let internal = [];
     let external = [];
@@ -100,10 +120,6 @@ export const getLinks = async () => {
         if (link.isInternal) internal.push(link);
         else external.push(link);
     });
-
-    // let saveData = {};
-    // saveData[urlName] = JSON.stringify(allLink);
-    // await chrome.storage.sync.set(saveData);
 
     return { allLink, unique, internal, external, broken };
 };

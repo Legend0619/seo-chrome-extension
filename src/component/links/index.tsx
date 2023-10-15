@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getLinks, exportLink, highLightNoFollow } from "../../content/links";
+import { getLinks, exportLink, highLightNoFollow, makeData } from "../../content/links";
 
 interface Link {
     url: string,
@@ -21,10 +21,14 @@ const Links = () => {
     const [data, setData] = useState<LinkData>();
     const [openIdx, setOpenIdx] = useState<number>(-1);
     const [loading, setLoading] = useState<boolean>(true);
+    const [linkCount, setLinkCount] = useState<number>(100);
+    const [processedLink, setProcessedLink] = useState<number>(0);
 
     useEffect(() => {
         const fetchData = async () => {
-            const res: LinkData =  await getLinks();
+            const all: Link[] =  await getLinks();
+            setLinkCount(all.length);
+            const res: LinkData = await makeData(all, setProcessedLink);
             setData(res);
             setLoading(false);
         }
@@ -51,7 +55,12 @@ const Links = () => {
             {
                 loading ? 
                 <div className="flex justify-center items-center h-60">
-                    <span className="loading loading-dots loading-lg m-auto"></span>
+                    <div>
+                        <div className="text-center">
+                            <span className="loading loading-dots loading-lg m-auto"></span>
+                        </div>
+                        <progress className="progress progress-info w-56" value={processedLink} max={linkCount}></progress>
+                    </div>
                 </div>
                 :
                 <>

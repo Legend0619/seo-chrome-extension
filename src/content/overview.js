@@ -251,3 +251,39 @@ export const getRedirect = async () => {
 
     return res;
 };
+
+export const measureText = async (text, type) => {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tab = tabs[0];
+    const tabId = tab.id;
+
+    const result = await chrome.scripting.executeScript({
+        target: { tabId },
+        func: (text, type) => {
+            // create a temporary element to measure text
+            const element = document.createElement("span");
+            element.style.visibility = "hidden";
+            element.style.display = "inline-block";
+            element.style.position = "absolute";
+            element.style.fontFamily = "Arial";
+            if (type === "title") element.style.fontSize = "20px";
+            else element.style.fontSize = "14px";
+            element.innerHTML = text;
+            document.body.appendChild(element);
+            const len = element.clientWidth;
+            document.body.removeChild(element);
+            return len;
+        },
+        args: [text, type],
+    });
+
+    return result[0].result;
+};
+
+export const getDomain = async () => {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tab = tabs[0];
+    const anchor = document.createElement("a");
+    anchor.href = tab.url;
+    return anchor.hostname;
+};

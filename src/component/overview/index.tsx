@@ -7,21 +7,24 @@ import Indexability from './Indexability';
 import Heading from "./Heading";
 import HiddenCheck from './HiddenCheck';
 import RedirectPath from './RedirectPath';
-import { getHiddenCheck } from '../../content/overview';
+import { getHiddenCheck, getDomain } from '../../content/overview';
 
 const Overview = () => {
     const [data, setData] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [domain, setDomain] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
             const res = await getHiddenCheck();
             setData(res);
+            const hostname = await getDomain();
+            setDomain(hostname);
             setLoading(false);
         }
 
         fetchData();
-    })
+    }, []);
 
     return (
         <div className='p-4'>
@@ -41,6 +44,14 @@ const Overview = () => {
                     <HiddenCheck data={ data } />
                     <RedirectPath />
                     <Heading />
+                    <div className='grid grid-cols-2 gap-4 mt-2'>
+                        <div className='text-base'>
+                            <a className="link link-primary" href={`https://${domain}/robots.txt`} target='_blank'>Robots.txt</a>
+                        </div>
+                        <div className='text-base'>
+                            <a className="link link-accent" href={`https://${domain}/sitemap.xml`} target='_blank'>sitemap.xml</a>
+                        </div>
+                    </div>
                 </>
             }
         </div>

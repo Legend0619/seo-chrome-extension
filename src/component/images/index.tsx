@@ -45,7 +45,7 @@ const Images = () => {
                         </div>
                     </div>
                     <div className="mb-3">
-                        <p className="text-sm">Missing alt text:</p>
+                        <p className="text-sm inline-block px-1 rounded-sm bg-purple-400 text-white mb-1">Missing alt text:</p>
                         <div className="border-2 rounded-md pl-6 py-2 pr-2">
                             <ul className="list-disc list-outside">
                                 {
@@ -55,7 +55,7 @@ const Images = () => {
                         </div>
                     </div>
                     <div className="mb-3">
-                        <p className="text-sm">Large image files:</p>
+                        <p className="text-sm inline-block px-1 rounded-sm bg-purple-400 text-white mb-1">Large image files:</p>
                         <div className="border-2 rounded-md pl-6 py-2 pr-2">
                             <ul className="list-disc list-outside">
                                 {
@@ -65,7 +65,7 @@ const Images = () => {
                         </div>
                     </div>
                     <div className="mb-3">
-                        <p className="text-sm">Images without modern format:</p>
+                        <p className="text-sm inline-block px-1 rounded-sm bg-purple-400 text-white mb-1">Images without modern format:</p>
                         <div className="border-2 rounded-md pl-6 py-2 pr-2">
                             <ul className="list-disc list-outside">
                                 {

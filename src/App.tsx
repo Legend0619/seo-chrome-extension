@@ -1,15 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faHeading, faImage, faLink, faDatabase } from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faHeading, faImage, faLink, faDatabase, faCode, faSmile, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import "./App.css";
 import Overview from './component/overview';
 import SubHeading from './component/subheading';
 import Images from "./component/images";
 import Links from "./component/links";
 import Schema from './component/schema';
+import Javascript from './component/Javascript';
+import Tips from './component/Tips';
+import Keyword from './component/keyword';
 
 function App() {
     const [activeTab, setActiveTab] = useState<Number>(0);
+    const [title, setTitle] = useState("");
+
+    useEffect(() => {
+        setTitle(chrome.runtime.getManifest()["name"]);
+    }, []);
 
     const handleActiveTab = (active: Number) => {
         setActiveTab(active);
@@ -18,13 +26,18 @@ function App() {
     return (
         <div className="App">
             <div className="banner px-4 py-2 text-lg text-white">
-                Easy SEO Extenison 1.0
+                {title}
             </div>
             <div className='flex'>
                 <ul className="menu p-0 mainHeight">
                     <li>
                         <a className={`tooltip tooltip-right rounded-none ${activeTab === 0 ? "" : "active"}`} data-tip="Overview" onClick={() => handleActiveTab(0)}>
                             <FontAwesomeIcon className='text-xl py-2' icon={faHouse} />
+                        </a>
+                    </li>
+                    <li>
+                        <a className={`tooltip tooltip-right rounded-none ${activeTab === 7 ? "" : "active"}`} data-tip="Keyword Sniper" onClick={() => handleActiveTab(7)}>
+                            <FontAwesomeIcon className='text-xl py-2' icon={faMagnifyingGlass} />
                         </a>
                     </li>
                     <li>
@@ -48,7 +61,17 @@ function App() {
                         </a>
                     </li>
                     <li>
-                        <a className={`tooltip tooltip-right rounded-none active h-60`} />
+                        <a className={`tooltip tooltip-right rounded-none ${activeTab === 5 ? "" : "active"}`} data-tip="Javascript" onClick={() => handleActiveTab(5)}>
+                            <FontAwesomeIcon className='text-xl py-2' icon={faCode} />
+                        </a>
+                    </li>
+                    <li>
+                        <a className={`tooltip tooltip-right rounded-none ${activeTab === 6 ? "" : "active"}`} data-tip="SEO Tips" onClick={() => handleActiveTab(6)}>
+                            <FontAwesomeIcon className='text-xl py-2' icon={faSmile} />
+                        </a>
+                    </li>
+                    <li>
+                        <a className={`tooltip tooltip-right rounded-none active h-24`} />
                     </li>
                 </ul>
                 <div className='w-full mainHeight overflow-y-scroll'>
@@ -57,6 +80,9 @@ function App() {
                     {activeTab === 2 && <Images />}
                     {activeTab === 3 && <Links />}
                     {activeTab === 4 && <Schema />}
+                    {activeTab === 5 && <Javascript />}
+                    {activeTab === 6 && <Tips />}
+                    {activeTab === 7 && <Keyword />}
                 </div>
             </div>
         </div>

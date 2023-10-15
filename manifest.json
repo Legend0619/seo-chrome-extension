@@ -1,13 +1,30 @@
 {
     "version": "1.0",
     "manifest_version": 3,
-    "name": "Easy SEO Extenison",
+    "name": "Easy SEO Extenison 1.0",
     "description": "The most useful SEO extension",
     "action": {
+        "default_icon": {
+            "16": "assets/qn_16.png",
+            "32": "assets/qn_32.png",
+            "48": "assets/qn_48.png",
+            "64": "assets/qn_64.png",
+            "128": "assets/qn_128.png"
+        },
         "default_popup": "js/index.html",
         "default_title": "React Chrome Extension"
     },
+    "icons": {
+        "16": "assets/qn_16.png",
+        "32": "assets/qn_32.png",
+        "48": "assets/qn_48.png",
+        "64": "assets/qn_64.png",
+        "128": "assets/qn_128.png"
+    },
     "permissions": [
+        "storage",
+        "contentSettings",
+        "contextMenus",
         "scripting",
         "webRequest",
         "webNavigation",
@@ -16,5 +33,11 @@
     "host_permissions": ["http://*/*", "https://*/*"],
     "background": {
         "service_worker": "background.js"
-    }
+    },
+    "content_scripts": [
+        {
+            "js": ["content.js"],
+            "matches": ["\u003Call_urls>"]
+        }
+    ]
 }

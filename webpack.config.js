@@ -33,6 +33,13 @@ module.exports = {
             patterns: [
                 { from: "manifest.json", to: "../manifest.json" },
                 { from: "src/background.js", to: "../background.js" },
+                { from: "src/content.js", to: "../content.js" },
+                { from: "src/assets/logo.jpg", to: "../assets/logo.jpg" },
+                { from: "src/assets/qn_16.png", to: "../assets/qn_16.png" },
+                { from: "src/assets/qn_32.png", to: "../assets/qn_32.png" },
+                { from: "src/assets/qn_48.png", to: "../assets/qn_48.png" },
+                { from: "src/assets/qn_64.png", to: "../assets/qn_64.png" },
+                { from: "src/assets/qn_128.png", to: "../assets/qn_128.png" },
             ],
         }),
         ...getHtmlPlugins(["index"]),

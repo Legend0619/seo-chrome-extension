@@ -14,7 +14,7 @@ const Heading = () => {
     }, []);
 
     return (
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-5 gap-4 pb-2  border-b-2">
             <div className="text-base">Heads, Links, Images</div>
             <div className="col-span-4">
                 <div className='grid grid-cols-12 gap-2 mb-3'>
